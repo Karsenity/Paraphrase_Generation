@@ -1,0 +1,7 @@
+
+
+Command for installing pytorch:
+    If you have an Nvidia GPU:
+        conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+    If you don't have an Nvidia GPU:
+        conda install pytorch torchvision torchaudio -c pytorch
