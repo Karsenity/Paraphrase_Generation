@@ -5,9 +5,9 @@ from torch.utils.data import DataLoader
 from torchtext.data.utils import get_tokenizer
 
 from pytorch_projects.seq2seq_english_to_french.DataTools.translation_dataset import TranslationDataset, CollateBatch
-from pytorch_projects.seq2seq_english_to_french.Decoders.decoder import DecoderRNN
-from pytorch_projects.seq2seq_english_to_french.Encoders.encoder import EncoderRNN
-from pytorch_projects.seq2seq_english_to_french.seq2seq_model import Seq2Seq
+from pytorch_projects.seq2seq_english_to_french.Seq2Seq.decoder import DecoderRNN
+from pytorch_projects.seq2seq_english_to_french.Seq2Seq.encoder import EncoderRNN
+from pytorch_projects.seq2seq_english_to_french.Seq2Seq.seq2seq_model import Seq2Seq
 from pytorch_projects.seq2seq_english_to_french.utils import load_checkpoint, translate_sentence, \
     save_checkpoint, regenerate_data
 
