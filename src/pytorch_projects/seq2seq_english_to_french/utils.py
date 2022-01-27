@@ -6,10 +6,24 @@ import torch
 import unicodedata
 from sklearn.model_selection import train_test_split
 
+eng_prefixes = ("i am ", "i m ", "he is",
+                "he s ", "she is", "she s ",
+                "you are", "you re ", "we are",
+                "we re ", "they are", "they re "
+                )
+
+
+def filter_pairs(pairs, max_length=15):
+    return [
+        p for p in pairs
+        if min(len(p[0].split(' ')), len(p[1].split(' '))) <= max_length
+           and p[0].startswith(eng_prefixes)
+    ]
+
 
 def regenerate_data(data_filename, tokenizers, src_spacy, tar_spacy):
     lines = open('data/%s' % data_filename, encoding='utf-8').read().strip().split('\n')
-    src_data, target_data = map(list, zip(*[[normalize_str(s) for s in l.split('\t')[:2]] for l in lines]))
+    src_data, target_data = map(list, zip(*filter_pairs([[normalize_str(s) for s in l.split('\t')[:2]] for l in lines])))
     df = pd.DataFrame({
         src_spacy: src_data,
         tar_spacy: target_data
@@ -60,4 +74,4 @@ def translate_sentence(model, sentence, src_vocab, tar_vocab, src_spacy, device,
         # Model predicts it's the end of the sentence
         if best_guess == tar_vocab["<EOS>"]:
             break
-        return tar_vocab.lookup_tokens(outputs)[1:]
+    return tar_vocab.lookup_tokens(outputs)[1:]

@@ -11,6 +11,8 @@ from pytorch_projects.seq2seq_english_to_french.Seq2Seq.seq2seq_model import Seq
 from pytorch_projects.seq2seq_english_to_french.utils import load_checkpoint, translate_sentence, \
     save_checkpoint, regenerate_data
 
+from torch.utils.tensorboard import SummaryWriter
+
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -30,24 +32,24 @@ def main():
     # Generate data if needed
 
     # Parameters for Dataloader
-    batch_size = 200
+    batch_size = 512
     num_workers = 0
     pin_memory = True
     # Parameters for model training
-    load_model = False
+    load_model = True
     save_model = True
     num_epochs = 100
-    learning_rate = 3e-4
+    learning_rate = 0.0003
     encoder_embedding_size = 300
     decoder_embedding_size = 300
     hidden_size = 256
     num_layers = 1
-    enc_dropout = 0.5
-    dec_dropout = 0.5
-    sentence = "she is very smart and beautiful ."
+    enc_dropout = 0.1
+    dec_dropout = 0.1
+    sentence = "he is painting a picture ."
 
     print("generating data...")
-    regenerate_data(data_filename, tokenizers, src_spacy, tar_spacy)
+    # regenerate_data(data_filename, tokenizers, src_spacy, tar_spacy)
     print("creating dataset...")
     train_dataset = TranslationDataset("data/training.csv", tokenizers, special_symbols)
     print("success!")
@@ -90,6 +92,9 @@ def main():
 
     """
     Perform training Loop """
+    writer = SummaryWriter(f'runs/MNIST/tensorboard')
+    step = 0
+    emb_step = 0
     for epoch in range(num_epochs):
         print(f"[Epoch {epoch} / {num_epochs}]")
         if save_model:
@@ -122,6 +127,16 @@ def main():
             scaler.step(optimizer)
             scaler.update()
 
+            writer.add_scalar('Training Loss', loss, global_step=step)
+            step += 1
+    # get embedding of whole source vocab
+    model.eval()
+    writer.add_embedding(
+        encoder_net.embedding(torch.tensor([i for i in range(len(src_vocab))], device=device)),
+        list(src_vocab.get_stoi().keys()),
+        global_step=emb_step)
+    emb_step += 1
+    model.train()
 
 if __name__ == "__main__":
     main()
