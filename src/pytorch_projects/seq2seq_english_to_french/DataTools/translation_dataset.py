@@ -6,7 +6,7 @@ from torchtext.vocab import build_vocab_from_iterator
 
 
 class TranslationDataset(Dataset):
-    def __init__(self, filepath, tokenizers, special_symbols, freq_threshold=25):
+    def __init__(self, filepath, tokenizers, special_symbols, freq_threshold=1):
         self.df = pd.read_csv(filepath)
         src, tar = [k for k in tokenizers.keys()]
         # Need to tokenize

@@ -14,7 +14,6 @@ class Seq2Seq(nn.Module):
         batch_size = src.shape[1]
         target_len = target.shape[0]
         target_vocab_size = len(target_vocab)
-
         outputs = torch.zeros(target_len, batch_size, target_vocab_size, device=self.device)
         encoder_states, hidden = self.encoder(src)
 

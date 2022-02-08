@@ -1,3 +1,4 @@
+#%%
 import torch
 import torch.nn as nn
 from torch import optim
@@ -29,16 +30,15 @@ def main():
     special_symbols = {
         "<UNK>": 0, "<PAD>": 1, "<SOS>": 2, "<EOS>": 3
     }
-    # Generate data if needed
 
     # Parameters for Dataloader
-    batch_size = 512
+    batch_size = 32
     num_workers = 0
     pin_memory = True
     # Parameters for model training
-    load_model = True
+    load_model = False
     save_model = True
-    num_epochs = 100
+    num_epochs = 5
     learning_rate = 0.0003
     encoder_embedding_size = 300
     decoder_embedding_size = 300
@@ -90,11 +90,13 @@ def main():
     if load_model:
         load_checkpoint(torch.load("model_checkpoint.tar"), model, optimizer)
 
+# %%
     """
     Perform training Loop """
     writer = SummaryWriter(f'runs/MNIST/tensorboard')
     step = 0
     emb_step = 0
+
     for epoch in range(num_epochs):
         print(f"[Epoch {epoch} / {num_epochs}]")
         if save_model:
